@@ -1,0 +1,29 @@
+@model IReadOnlyList<UserResponse>
+@{
+    ViewData["Title"] = "Users";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Users</h1>
+    <a class="btn btn-primary" asp-action="CreateUser">Add user</a>
+</div>
+<table class="table">
+    <thead><tr><th>Email</th><th>Role</th><th>Active</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@user.Role</td>
+            <td>@(user.IsActive ? "Yes" : "No")</td>
+            <td>
+                <a class="btn btn-sm btn-outline-secondary" asp-action="EditUser" asp-route-id="@user.Id">Edit</a>
+                <form asp-action="DeleteUser" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@user.Id" />
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OnlineEbookShopV1.Api/OnlineEbookShopV1.Api.csproj" />
+    <Project Path="src/OnlineEbookShopV1.Mvc/OnlineEbookShopV1.Mvc.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OnlineEbookShopV1.Tests/OnlineEbookShopV1.Tests.csproj" />
+  </Folder>
+</Solution>

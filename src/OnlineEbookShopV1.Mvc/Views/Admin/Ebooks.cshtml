@@ -1,0 +1,30 @@
+@model IReadOnlyList<EbookResponse>
+@{
+    ViewData["Title"] = "Ebooks";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Ebooks</h1>
+    <a class="btn btn-primary" asp-action="CreateEbook">Add ebook</a>
+</div>
+<table class="table">
+    <thead><tr><th>Title</th><th>Author</th><th>Price</th><th>Published</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var ebook in Model)
+    {
+        <tr>
+            <td>@ebook.Title</td>
+            <td>@ebook.Author</td>
+            <td>@ebook.Price.ToString("C")</td>
+            <td>@(ebook.IsPublished ? "Yes" : "No")</td>
+            <td>
+                <a class="btn btn-sm btn-outline-secondary" asp-action="EditEbook" asp-route-id="@ebook.Id">Edit</a>
+                <form asp-action="DeleteEbook" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@ebook.Id" />
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

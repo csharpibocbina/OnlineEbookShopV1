@@ -1,0 +1,52 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: src/OnlineEbookShopV1.Api/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Logging__IsLocal: ${LOGGING_IS_LOCAL:-true}
+      ApplicationInsights__ConnectionString: ${APPLICATIONINSIGHTS_CONNECTION_STRING:-}
+      ConnectionStrings__Supabase: ${SUPABASE_CONNECTION_STRING:-}
+      Jwt__Key: ${JWT_KEY:-dev-only-signing-key-at-least-32-characters-long!}
+      RabbitMq__Enabled: "true"
+      RabbitMq__Host: rabbitmq
+      Stripe__SecretKey: ${STRIPE_SECRET_KEY:-}
+      Stripe__WebhookSecret: ${STRIPE_WEBHOOK_SECRET:-}
+      PayPal__ClientId: ${PAYPAL_CLIENT_ID:-}
+      PayPal__ClientSecret: ${PAYPAL_CLIENT_SECRET:-}
+      PayPal__WebhookId: ${PAYPAL_WEBHOOK_ID:-}
+      Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@ebookshop.local}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-Admin123!}
+      Cors__Origins__0: http://localhost:8081
+      Cors__Origins__1: http://mvc:8080
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  mvc:
+    build:
+      context: .
+      dockerfile: src/OnlineEbookShopV1.Mvc/Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Logging__IsLocal: ${LOGGING_IS_LOCAL:-true}
+      ApplicationInsights__ConnectionString: ${APPLICATIONINSIGHTS_CONNECTION_STRING:-}
+      Api__BaseUrl: http://api:8080
+    depends_on:
+      - api

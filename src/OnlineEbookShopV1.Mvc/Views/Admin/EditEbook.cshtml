@@ -1,0 +1,11 @@
+@model EbookEditViewModel
+@{
+    ViewData["Title"] = "Edit ebook";
+}
+<h1>Edit ebook</h1>
+<form method="post">
+    <input type="hidden" asp-for="Id" />
+    <partial name="_EbookForm" />
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-link" asp-action="Ebooks">Cancel</a>
+</form>

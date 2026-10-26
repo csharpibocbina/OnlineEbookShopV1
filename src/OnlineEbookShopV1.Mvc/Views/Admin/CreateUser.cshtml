@@ -1,0 +1,10 @@
+@model UserEditViewModel
+@{
+    ViewData["Title"] = "Add user";
+}
+<h1>Add user</h1>
+<form method="post">
+    <partial name="_UserForm" />
+    <button class="btn btn-primary" type="submit">Create</button>
+    <a class="btn btn-link" asp-action="Users">Cancel</a>
+</form>

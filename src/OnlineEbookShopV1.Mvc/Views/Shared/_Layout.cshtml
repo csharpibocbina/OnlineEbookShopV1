@@ -1,0 +1,66 @@
+﻿@using OnlineEbookShopV1.Mvc.Api
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Online Ebook Shop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Catalog" asp-action="Index">Online Ebook Shop</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+                <div id="nav" class="navbar-collapse collapse">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link" asp-controller="Catalog" asp-action="Index">Catalog</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Cart" asp-action="Index">Cart</a></li>
+                        @if (AuthCookieStore.IsSignedIn(Context.Request))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Checkout" asp-action="Orders">Orders</a></li>
+                        }
+                        @if (AuthCookieStore.IsAdmin(Context.Request))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Users">Users</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Ebooks">Ebooks</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Orders">All orders</a></li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (AuthCookieStore.IsSignedIn(Context.Request))
+                        {
+                            <li class="nav-item"><span class="navbar-text me-2">@AuthCookieStore.UserEmail(Context.Request)</span></li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Login</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register">Register</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container pb-4">
+        @if (TempData["Error"] is string err)
+        {
+            <div class="alert alert-danger">@err</div>
+        }
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

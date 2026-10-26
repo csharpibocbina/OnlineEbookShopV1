@@ -1,0 +1,18 @@
+@Api = http://localhost:5144
+
+GET {{Api}}/health
+Accept: application/json
+
+###
+
+POST {{Api}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "admin@ebookshop.local", "password": "Admin123!" }
+
+###
+
+GET {{Api}}/api/ebooks
+Accept: application/json
+
+###

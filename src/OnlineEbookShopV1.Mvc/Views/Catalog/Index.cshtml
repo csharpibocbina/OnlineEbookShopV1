@@ -1,0 +1,33 @@
+@model IReadOnlyList<EbookResponse>
+@{
+    ViewData["Title"] = "Catalog";
+}
+<h1>Ebooks</h1>
+@if (ViewBag.Error is string error)
+{
+    <div class="alert alert-warning">@error Could not load the catalog. Is the API running?</div>
+}
+<div class="row g-3">
+@foreach (var ebook in Model)
+{
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@ebook.Title</h5>
+                <p class="card-text text-muted">@ebook.Author</p>
+                <p class="card-text">@ebook.Description</p>
+                <p class="fw-bold">@ebook.Price.ToString("C")</p>
+                <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@ebook.Id">Details</a>
+                @if (AuthCookieStore.IsSignedIn(Context.Request))
+                {
+                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="ebookId" value="@ebook.Id" />
+                        <button class="btn btn-primary" type="submit">Add to cart</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+}
+</div>

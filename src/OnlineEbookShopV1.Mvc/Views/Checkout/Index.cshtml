@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Checkout";
+}
+<h1>Choose payment</h1>
+<p>Complete your purchase with Stripe or PayPal.</p>
+<div class="d-flex gap-3">
+    <form asp-action="Pay" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="provider" value="Stripe" />
+        <button class="btn btn-primary" type="submit">Pay with Stripe</button>
+    </form>
+    <form asp-action="Pay" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="provider" value="PayPal" />
+        <button class="btn btn-info" type="submit">Pay with PayPal</button>
+    </form>
+</div>

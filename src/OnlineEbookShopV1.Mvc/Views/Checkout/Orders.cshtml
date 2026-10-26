@@ -1,0 +1,34 @@
+@model IReadOnlyList<OrderResponse>
+@{
+    ViewData["Title"] = "Orders";
+}
+<h1>Orders</h1>
+@if (Model.Count == 0)
+{
+    <p>No orders yet.</p>
+}
+else
+{
+    @foreach (var order in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between">
+                <span>@order.CreatedAt.ToLocalTime().ToString("g")</span>
+                <span class="badge bg-secondary">@order.Status</span>
+            </div>
+            <div class="card-body">
+                <ul>
+                    @foreach (var item in order.Items)
+                    {
+                        <li>@item.Title × @item.Quantity — @((item.UnitPrice * item.Quantity).ToString("C"))</li>
+                    }
+                </ul>
+                <p class="mb-1">Total @order.Total.ToString("C")</p>
+                @foreach (var p in order.Payments)
+                {
+                    <small class="text-muted d-block">@p.Provider · @p.Status</small>
+                }
+            </div>
+        </div>
+    }
+}

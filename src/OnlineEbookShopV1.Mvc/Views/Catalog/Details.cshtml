@@ -1,0 +1,14 @@
+@model EbookResponse
+@{
+    ViewData["Title"] = Model.Title;
+}
+<h1>@Model.Title</h1>
+<p class="text-muted">@Model.Author @(string.IsNullOrEmpty(Model.Isbn) ? "" : $"· ISBN {Model.Isbn}")</p>
+<p>@Model.Description</p>
+<p class="fs-4">@Model.Price.ToString("C")</p>
+<form asp-controller="Cart" asp-action="Add" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ebookId" value="@Model.Id" />
+    <button class="btn btn-primary" type="submit">Add to cart</button>
+    <a class="btn btn-link" asp-action="Index">Back</a>
+</form>

@@ -1,0 +1,29 @@
+@model EbookEditViewModel
+<div class="mb-3">
+    <label asp-for="Title" class="form-label"></label>
+    <input asp-for="Title" class="form-control" />
+</div>
+<div class="mb-3">
+    <label asp-for="Author" class="form-label"></label>
+    <input asp-for="Author" class="form-control" />
+</div>
+<div class="mb-3">
+    <label asp-for="Description" class="form-label"></label>
+    <textarea asp-for="Description" class="form-control"></textarea>
+</div>
+<div class="mb-3">
+    <label asp-for="Isbn" class="form-label"></label>
+    <input asp-for="Isbn" class="form-control" />
+</div>
+<div class="mb-3">
+    <label asp-for="Price" class="form-label"></label>
+    <input asp-for="Price" class="form-control" />
+</div>
+<div class="mb-3">
+    <label asp-for="CoverUrl" class="form-label"></label>
+    <input asp-for="CoverUrl" class="form-control" />
+</div>
+<div class="form-check mb-3">
+    <input asp-for="IsPublished" class="form-check-input" />
+    <label asp-for="IsPublished" class="form-check-label"></label>
+</div>
