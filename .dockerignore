@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/logs/
+**/.vs/
+.git/
+.env
+*.docx
+tests/
