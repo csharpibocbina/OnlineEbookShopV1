@@ -25,7 +25,7 @@ try
 
     app.UseRouting();
     app.MapStaticAssets();
-    app.MapControllerRoute(name: "default", pattern: "{controller=Catalog}/{action=Index}/{id?}").WithStaticAssets();
+    app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}").WithStaticAssets();
     app.Run();
 }
 catch (Exception ex) when (ex is not HostAbortedException)

@@ -1,0 +1,36 @@
+@model EbookResponse
+@{
+    var palette = new[] { "#0e6b83", "#e07a2d", "#4a6fa5", "#2f9e8f", "#8a5a9e", "#c44d58" };
+    var color = palette[Math.Abs(Model.Id.GetHashCode()) % palette.Length];
+}
+<div class="book-card">
+    <a class="book-cover" asp-controller="Catalog" asp-action="Details" asp-route-id="@Model.Id">
+        @if (!string.IsNullOrWhiteSpace(Model.CoverUrl))
+        {
+            <img src="@Model.CoverUrl" alt="@Model.Title" loading="lazy" />
+        }
+        else
+        {
+            <div class="cover-fallback" style="background:linear-gradient(145deg,@color,#0b2f3d)">
+                <span>@Model.Title</span>
+            </div>
+        }
+    </a>
+    <div class="book-info">
+        <div class="book-author">@Model.Author</div>
+        <h3 class="book-title"><a asp-controller="Catalog" asp-action="Details" asp-route-id="@Model.Id">@Model.Title</a></h3>
+        <div class="book-price">@Model.Price.ToString("C")</div>
+        @if (AuthCookieStore.IsSignedIn(Context.Request))
+        {
+            <form asp-controller="Cart" asp-action="Add" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ebookId" value="@Model.Id" />
+                <button class="btn btn-add" type="submit">Add to cart</button>
+            </form>
+        }
+        else
+        {
+            <a class="btn btn-add" asp-controller="Account" asp-action="Login">Login to buy</a>
+        }
+    </div>
+</div>

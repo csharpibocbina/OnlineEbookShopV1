@@ -1,14 +1,69 @@
 @model EbookResponse
 @{
     ViewData["Title"] = Model.Title;
+    var related = (List<EbookResponse>?)ViewBag.Related ?? new List<EbookResponse>();
+    var palette = new[] { "#0e6b83", "#e07a2d", "#4a6fa5", "#2f9e8f", "#8a5a9e", "#c44d58" };
+    var color = palette[Math.Abs(Model.Id.GetHashCode()) % palette.Length];
 }
-<h1>@Model.Title</h1>
-<p class="text-muted">@Model.Author @(string.IsNullOrEmpty(Model.Isbn) ? "" : $"· ISBN {Model.Isbn}")</p>
-<p>@Model.Description</p>
-<p class="fs-4">@Model.Price.ToString("C")</p>
-<form asp-controller="Cart" asp-action="Add" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="ebookId" value="@Model.Id" />
-    <button class="btn btn-primary" type="submit">Add to cart</button>
-    <a class="btn btn-link" asp-action="Index">Back</a>
-</form>
+<section class="page-banner">
+    <div class="container">
+        <h1>Book details</h1>
+        <div class="breadcrumb-lite"><a asp-controller="Home" asp-action="Index">Home</a> / <a asp-action="Index">Shop</a> / @Model.Title</div>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-5">
+        <div class="col-md-4">
+            <div class="detail-cover">
+                @if (!string.IsNullOrWhiteSpace(Model.CoverUrl))
+                {
+                    <img src="@Model.CoverUrl" alt="@Model.Title" />
+                }
+                else
+                {
+                    <div class="cover-fallback" style="background:linear-gradient(145deg,@color,#0b2f3d);font-size:1.6rem"><span>@Model.Title</span></div>
+                }
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h2 class="mb-1">@Model.Title</h2>
+            <p class="text-muted">by @Model.Author</p>
+            <div class="detail-price mb-3">@Model.Price.ToString("C")</div>
+            <p>@Model.Description</p>
+            <dl class="meta-table row mb-4">
+                <dt class="col-sm-3">Author</dt><dd class="col-sm-9">@Model.Author</dd>
+                @if (!string.IsNullOrEmpty(Model.Isbn))
+                {
+                    <dt class="col-sm-3">ISBN</dt><dd class="col-sm-9">@Model.Isbn</dd>
+                }
+                <dt class="col-sm-3">Format</dt><dd class="col-sm-9 mb-0">Digital ebook</dd>
+            </dl>
+            @if (AuthCookieStore.IsSignedIn(Context.Request))
+            {
+                <form asp-controller="Cart" asp-action="Add" method="post" class="d-flex gap-2 align-items-center">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ebookId" value="@Model.Id" />
+                    <button class="btn btn-primary-brand" type="submit">Add to cart</button>
+                    <a class="btn btn-link" asp-action="Index">Back to shop</a>
+                </form>
+            }
+            else
+            {
+                <a class="btn btn-primary-brand" asp-controller="Account" asp-action="Login">Login to buy</a>
+                <a class="btn btn-link" asp-action="Index">Back to shop</a>
+            }
+        </div>
+    </div>
+
+    @if (related.Count > 0)
+    {
+        <div class="section-head mt-5"><h2>Related books</h2></div>
+        <div class="row g-4">
+            @foreach (var ebook in related)
+            {
+                <div class="col-6 col-md-3"><partial name="_BookCard" model="ebook" /></div>
+            }
+        </div>
+    }
+</div>

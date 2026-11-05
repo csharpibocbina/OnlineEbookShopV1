@@ -1,33 +1,61 @@
 @model IReadOnlyList<EbookResponse>
 @{
-    ViewData["Title"] = "Catalog";
+    ViewData["Title"] = "Shop";
+    string? sort = ViewBag.Sort;
 }
-<h1>Ebooks</h1>
-@if (ViewBag.Error is string error)
-{
-    <div class="alert alert-warning">@error Could not load the catalog. Is the API running?</div>
-}
-<div class="row g-3">
-@foreach (var ebook in Model)
-{
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@ebook.Title</h5>
-                <p class="card-text text-muted">@ebook.Author</p>
-                <p class="card-text">@ebook.Description</p>
-                <p class="fw-bold">@ebook.Price.ToString("C")</p>
-                <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@ebook.Id">Details</a>
-                @if (AuthCookieStore.IsSignedIn(Context.Request))
+<section class="page-banner">
+    <div class="container">
+        <h1>Shop</h1>
+        <div class="breadcrumb-lite"><a asp-controller="Home" asp-action="Index">Home</a> / Shop</div>
+    </div>
+</section>
+
+<div class="container section">
+    @if (ViewBag.Error is string error)
+    {
+        <div class="alert alert-warning">@error Could not load the catalog. Is the API running?</div>
+    }
+    <div class="row g-4">
+        <aside class="col-lg-3">
+            <form method="get" asp-action="Index">
+                <div class="filter-box">
+                    <h6>Search</h6>
+                    <input class="form-control" type="search" name="q" value="@ViewBag.Q" placeholder="Title or author" />
+                </div>
+                <div class="filter-box">
+                    <h6>Filter by price</h6>
+                    <div class="d-flex gap-2">
+                        <input class="form-control" type="number" min="0" step="0.01" name="minPrice" value="@ViewBag.MinPrice" placeholder="Min" />
+                        <input class="form-control" type="number" min="0" step="0.01" name="maxPrice" value="@ViewBag.MaxPrice" placeholder="Max" />
+                    </div>
+                </div>
+                <div class="filter-box">
+                    <h6>Sort by</h6>
+                    <select class="form-select" name="sort">
+                        <option value="" selected="@(string.IsNullOrEmpty(sort))">Default</option>
+                        <option value="price_asc" selected="@(sort == "price_asc")">Price: low to high</option>
+                        <option value="price_desc" selected="@(sort == "price_desc")">Price: high to low</option>
+                        <option value="title" selected="@(sort == "title")">Title A&ndash;Z</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                    <button class="btn btn-brand flex-fill" type="submit">Apply</button>
+                    <a class="btn btn-outline-brand" asp-action="Index">Reset</a>
+                </div>
+            </form>
+        </aside>
+        <div class="col-lg-9">
+            <p class="text-muted">Showing @Model.Count @(Model.Count == 1 ? "result" : "results")</p>
+            @if (Model.Count == 0)
+            {
+                <div class="alert alert-light border">No books match your filters.</div>
+            }
+            <div class="row g-4">
+                @foreach (var ebook in Model)
                 {
-                    <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="ebookId" value="@ebook.Id" />
-                        <button class="btn btn-primary" type="submit">Add to cart</button>
-                    </form>
+                    <div class="col-6 col-md-4"><partial name="_BookCard" model="ebook" /></div>
                 }
             </div>
         </div>
     </div>
-}
 </div>
